@@ -1,0 +1,19 @@
+%html
+  %head
+    %title Has this movie been remade yet?
+  %link{:rel => "stylesheet", :href => "/stylesheet.css", :type => "text/css", :media => "all"}
+
+  %body
+  #main/
+  %h2 Has #{@title} been remade yet?
+  %h1 #{@remade}
+  %br
+  <img height="250" src="#{@poster}" />
+  %h2 #{@title}
+  %h2 #{@year}
+  %p #{@num_results} other results came up in this search.
+  %ol
+    - @other_movies.each do |i|    
+      %li=i
+  
+ 
