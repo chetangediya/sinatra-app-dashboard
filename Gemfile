@@ -7,6 +7,7 @@ gem 'twitter'
 gem 'heroku'
 gem 'haml'
 gem 'rake'
+gem 'tmdb_party'
 
 group :test do
   gem 'guard'

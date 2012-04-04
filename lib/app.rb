@@ -3,6 +3,8 @@ require 'haml'
 require 'imdb_party' 
 require 'rss'
  
+require 'tmdb_party'
+require 'twitter'
 
 class Dashboard < Sinatra::Application
 
@@ -12,6 +14,11 @@ class Dashboard < Sinatra::Application
    rss = RSS::Parser.parse(open('http://rss.imdb.com//list/2aXCP-zFqLQ/').read, false)
    @l = rss.items.last
 
+   @l = rss.items.last   
+   @title = @l.title
+   
+   @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first
+   
    haml :index
   end  
         
