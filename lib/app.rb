@@ -1,19 +1,15 @@
 require 'sinatra'
 require 'haml'
-require 'imdb_party' 
 require 'rss'
- 
 require 'tmdb_party'
 require 'twitter'
 
 class Dashboard < Sinatra::Application
 
     set :views, settings.root + '/../views'
-
+         
   get '/' do
    rss = RSS::Parser.parse(open('http://rss.imdb.com//list/2aXCP-zFqLQ/').read, false)
-   @l = rss.items.last
-
    @l = rss.items.last   
    @title = @l.title
    
