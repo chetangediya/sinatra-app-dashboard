@@ -13,10 +13,10 @@ class Dashboard < Sinatra::Application
    @l = rss.items.last   
    @title = @l.title
    
-   @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first
    @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
    @results = @tmdb.search(@title)
-   @tmdb_title = @results.detect{|m| m.name == @title}
+   @poster_url = @results[0].posters[0].cover_url
+   
    
    
    

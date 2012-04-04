@@ -6,3 +6,5 @@
   %body
   #main/
   %h2 The last movie I saw was: #{@l.title}
+  %img{:src => "#{@poster_url}", :class => "poster"}
+  %h2 Last tweet: #{@last_tweet.text} - <a href="#{@last_tweet.urls[0]["url"]}">link</a>
