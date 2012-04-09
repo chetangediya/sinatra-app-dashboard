@@ -3,27 +3,24 @@ require 'haml'
 require 'rss'
 require 'tmdb_party'
 require 'twitter'
+require 'sass'
 
 class Feed
   
   def initialize(url)
     # instance variables
-    api_key = '0b612aa30e25ac5a0ffeb0a743e6511d'
     @url = url
     @rss = RSS::Parser.parse(open(@url).read, false)
-    @tmdb = TMDBParty::Base.new(api_key)
+    @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
+    @movie = @rss.items.last.title  
   end
 
   def title
     title = @rss.items[0].title
   end
- 
-  def movie
-    movie = @rss.items.last.title  
-  end  
-  
+
   def poster
-    results = @tmdb.search(movie)
+    results = @tmdb.search(@movie)
     poster = results[0].posters[0].cover_url    
   end
   
