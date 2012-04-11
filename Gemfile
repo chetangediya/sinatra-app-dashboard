@@ -8,6 +8,7 @@ gem 'heroku'
 gem 'haml'
 gem 'rake'
 gem 'tmdb_party'
+gem 'simple-rss'
 
 group :test do
   gem 'guard'

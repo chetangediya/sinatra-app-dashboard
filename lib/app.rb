@@ -1,40 +1,47 @@
 require 'sinatra'
 require 'haml'
-require 'rss'
+require 'simple-rss'
 require 'tmdb_party'
 require 'twitter'
 require 'sass'
+require 'open-uri'
 
 class Feed
   
   def initialize(url)
     # instance variables
     @url = url
-    @rss = RSS::Parser.parse(open(@url).read, false)
+    @rss = SimpleRSS.parse open(@url)
     @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
-    @movie = @rss.items.last.title  
   end
 
   def title
     title = @rss.items[0].title
   end
 
+  def movie
+    movie = @rss.items.last.title
+  end
+
+  def search
+    search_results = @tmdb.browse(:query => movie())    
+  end
+  
   def poster
-    results = @tmdb.search(@movie)
-    poster = results[0].posters[0].cover_url    
+    poster = search()[0].posters[0].cover_url
   end
   
   def url
-    url = @rss.channel.link  
+    url = @rss.channel.send(:link)  
   end
   
   def to_html
     max_description_length = 100
   
-    html = "<h4><a href='#{@rss.channel.link}'>#{@rss.channel.title}</a></h4>"
-    html << "<small>Updated on #{@rsschannel.date.strftime('%m/%d/%Y')}</small>" \
-            if @rss.channel.date
-    html << "<p>#{@rss.channel.description}</p>"
+    html = "<h4><a href='#{@rss.channel.send(:link)}'>#{@rss.channel.send(:title)}</a></h4>"
+    html << "<small>Updated on #{@rss.channel.send(:pubDate).strftime('%m/%d/%Y')}</small>" \
+            if @rss.channel.send(:pubDate)
+    html << "<p>#{@rss.channel.send(:description)}</p>"
     html << "<ol>"
   
     @rss.channel.items.each do |i|
