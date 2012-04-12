@@ -1,26 +1,28 @@
 require 'sinatra'
 require 'haml'
-require 'simple-rss'
 require 'tmdb_party'
 require 'twitter'
-require 'sass'
-require 'open-uri'
+require 'feedzirra'
 
 class Feed
   
   def initialize(url)
     # instance variables
     @url = url
-    @rss = SimpleRSS.parse open(@url)
+    @rss = Feedzirra::Feed.fetch_and_parse(@url)
     @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
   end
 
   def title
-    title = @rss.items[0].title
+    title = @rss.entries[0].title
   end
 
+  def length
+    length = @rss.entries.length    
+  end
+  
   def movie
-    movie = @rss.items.last.title
+    movie = @rss.entries.last.title
   end
 
   def search
@@ -32,35 +34,34 @@ class Feed
   end
   
   def url
-    url = @rss.channel.send(:link)  
+    url = @rss.url  
   end
   
   def to_html
     max_description_length = 100
-  
-    html = "<h4><a href='#{@rss.channel.send(:link)}'>#{@rss.channel.send(:title)}</a></h4>"
-    html << "<small>Updated on #{@rss.channel.send(:pubDate).strftime('%m/%d/%Y')}</small>" \
-            if @rss.channel.send(:pubDate)
-    html << "<p>#{@rss.channel.send(:description)}</p>"
+ 
+    html = "<h4><a href='#{@rss.url}'>#{@rss.title}</a></h4>"
+    html << "<small>Updated on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small>" \
+            if @rss.entries[0].published
     html << "<ol>"
   
-    @rss.channel.items.each do |i|
-      html << "<li><strong><a href='#{i.link}'>#{i.title}</a></strong><br/>"
-      html << "<small>Added on #{i.date.strftime("%m/%d/%Y")} at \
-  #{i.date.strftime("%I:%M%p")}</small><br/>" if i.date
-      desc_text = i.description.gsub(/<[^>]+>/,"").squeeze(" ").strip
+    @rss.entries.each do |i|
+      html << "<li><strong><a href='#{i.url}'>#{i.title}</a></strong><br/>"
+      html << "<small>Added on #{i.published.strftime("%m/%d/%Y")} at \
+  #{i.published.strftime("%I:%M%p")}</small><br/>" if i.published
+      desc_text = i.summary.gsub(/<[^>]+>/,"").squeeze(" ").strip
       if desc_text.length > max_description_length
         desc_text = desc_text[0,max_description_length] + "&hellip;"
       else
-        desc_text = i.content_encoded
+        desc_text = i.content
       end
       html << "#{desc_text}"
       html << "</li>"
     end
-  
-    html << "</ol>"
-    html
-  end
+ 
+   html << "</ol>"
+   html
+ end
    
 
 end

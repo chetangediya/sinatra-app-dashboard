@@ -5,10 +5,10 @@
 
   %body
   #main/
-  %h2 The last movie I saw was: #{@imdb.movie} 
+  %h2 I've watched #{@imdb.length} movies this year, the last one was: #{@imdb.movie} 
   %img{:src => "#{@imdb.poster}", :class => "poster"}
   %p See all the movies I've watched in 2012 at the <a href="#{@imdb.url}">IMDb Movie List</a>
-  %h2 The last post was from <a href="#{@wp.url}">infiniteregress.org</a>:
+  %h2 The last post from #{@wp.title}:
   %p #{@wp.to_html}
-  %h2 Last tumblr from <a href="#{@tumblr.url}">blog.ntimsalazar.com</a> was: #{@tumblr.to_html}
+  %h2 Last tumbl was: #{@tumblr.to_html}
   
