@@ -8,7 +8,6 @@
   %h2 I've watched #{@imdb.length} movies this year, the last one was: #{@imdb.movie} 
   %img{:src => "#{@imdb.poster}", :class => "poster"}
   %p See all the movies I've watched in 2012 at the <a href="#{@imdb.url}">IMDb Movie List</a>
-  %h2 The last post from #{@wp.title}:
   %p #{@wp.to_html}
-  %h2 Last tumbl was: #{@tumblr.to_html}
+  %p #{@tumblr.to_html}
   

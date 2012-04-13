@@ -39,33 +39,23 @@ class Feed
   
   def to_html
     max_description_length = 100
+    min_title_length = 0
+    most_recent_post = @rss.entries.first
  
-    html = "<h4><a href='#{@rss.url}'>#{@rss.title}</a></h4>"
-    html << "<small>Updated on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small>" \
-            if @rss.entries[0].published
-    html << "<ol>"
-  
-    @rss.entries.each do |i|
-      html << "<li><strong><a href='#{i.url}'>#{i.title}</a></strong><br/>"
-      html << "<small>Added on #{i.published.strftime("%m/%d/%Y")} at \
-  #{i.published.strftime("%I:%M%p")}</small><br/>" if i.published
-      desc_text = i.summary.gsub(/<[^>]+>/,"").squeeze(" ").strip
-      if desc_text.length > max_description_length
-        desc_text = desc_text[0,max_description_length] + "&hellip;"
-      else
-        desc_text = i.content
+    html = "<h2>The most recent post from <a href='#{@rss.url}'>#{@rss.title}</a></h2>"
+    html << "<small>on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small>" \
+      if @rss.entries[0].published
+        if not "#{most_recent_post.summary}".include? "#{most_recent_post.title}"
+    html << "#{most_recent_post.title}"
+        end
+    html << "#{most_recent_post.content}"
+        if not "#{most_recent_post.content}".include? "#{most_recent_post.summary}"
+    html << "#{most_recent_post.summary}"
+        end 
+    html
       end
-      html << "#{desc_text}"
-      html << "</li>"
-    end
- 
-   html << "</ol>"
-   html
- end
+  end
    
-
-end
-
 class Dashboard < Sinatra::Application
 
     set :views, settings.root + '/../views'
@@ -78,7 +68,7 @@ end
     @imdb = Feed.new('http://rss.imdb.com//list/2aXCP-zFqLQ')
     @wp = Feed.new('http://infiniteregress.org/?feed=rss2')
     @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')
-    # get_tweet     
+    #get_tweet     
     
     haml :index
   end  
