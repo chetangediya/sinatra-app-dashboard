@@ -45,15 +45,17 @@ class Feed
     most_recent_post = @rss.entries.first
  
     html = "<h2>The most recent post from <a href='#{@rss.url}'>#{@rss.title}</a></h2>"
-    html << "<small>on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small>" \
+    html << "<small>on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small><br/>" \
       if @rss.entries[0].published
-        if not "#{most_recent_post.summary}".include? "#{most_recent_post.title}"
-    html << "#{most_recent_post.title}"
+        if not "#{most_recent_post.content}".include? "#{most_recent_post.title}"
+          html << "#{most_recent_post.title}"
         end
-    html << "#{most_recent_post.content}"
-        if not "#{most_recent_post.content}".include? "#{most_recent_post.summary}"
-    html << "#{most_recent_post.summary}"
-        end 
+        if not "#{most_recent_post.content}".empty? 
+          html << "#{most_recent_post.content}"
+        end
+        if not @url.include? "infiniteregress.org"
+          html << "#{most_recent_post.summary}"
+        end
     html
       end
   end
@@ -86,7 +88,8 @@ get "/oauth/callback" do
 end
     
 def get_tweet
-  @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first  
+  @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first 
+
 end       
 
 def get_instagram
@@ -109,9 +112,12 @@ end
   get '/' do
     @imdb = Feed.new('http://rss.imdb.com//list/2aXCP-zFqLQ')
     @wp = Feed.new('http://infiniteregress.org/?feed=rss2')
+    @lino = Feed.new('http://lino.infiniteregress.org/?feed=rss2')
     @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')    
     @tweet = autolink_urls(get_tweet)
     @instagram = get_instagram
+    @quora = Feed.new('http://www.quora.com/N-Timothy-Salazar/rss')
+    @instapaper = Feed.new('http://www.instapaper.com/rss/2661/hINCyLmQPYJPwTPWSVVpo05Utk')
     haml :index
   end  
         

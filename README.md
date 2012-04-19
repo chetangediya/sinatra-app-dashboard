@@ -9,8 +9,8 @@ A dashboard lifestream app.
 * <del>Add Instapaper</del> (unneccessary, starred items filter to twitter)
 * Done <del>Add Wordpress
 * <del>Add Path</del> (no api)
-* Add Instagram
-* Add Quora
+* Done <del>Add Instagram
+* Done <del>Add Quora
 * Add Google Reader
 * Add Google+
 * <del>Add tumblrs
