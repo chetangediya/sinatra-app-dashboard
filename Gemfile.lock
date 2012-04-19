@@ -1,3 +1,13 @@
+GIT
+  remote: git://github.com/Instagram/instagram-ruby-gem.git
+  revision: f8af597ef24d7ad5efe20d381c8021cd4f901086
+  specs:
+    instagram (0.8.3)
+      faraday (~> 0.7)
+      faraday_middleware (~> 0.8)
+      hashie (>= 0.4.0)
+      multi_json (~> 1.0.3)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -11,6 +21,8 @@ GEM
       addressable (~> 2.2)
       multipart-post (~> 1.1)
       rack (~> 1.1)
+    faraday_middleware (0.8.7)
+      faraday (>= 0.7.4, < 0.9)
     feedzirra (0.1.3)
       activesupport (~> 3.1.1)
       builder (>= 2.1.2)
@@ -28,12 +40,13 @@ GEM
     guard-rspec (0.7.0)
       guard (>= 0.10.0)
     haml (3.1.4)
-    heroku (2.23.0)
+    hashie (1.2.0)
+    heroku (2.24.1)
       launchy (>= 0.3.2)
       netrc (~> 0.7.1)
       rest-client (~> 1.6.1)
       rubyzip
-    httparty (0.8.1)
+    httparty (0.8.2)
       multi_json
       multi_xml
     i18n (0.6.0)
@@ -42,11 +55,11 @@ GEM
     json (1.6.6)
     launchy (2.1.0)
       addressable (~> 2.2.6)
-    loofah (1.2.0)
+    loofah (1.2.1)
       nokogiri (>= 1.4.4)
     mime-types (1.18)
-    multi_json (1.2.0)
-    multi_xml (0.4.2)
+    multi_json (1.0.4)
+    multi_xml (0.4.4)
     multipart-post (1.1.5)
     netrc (0.7.1)
     nokogiri (1.5.2)
@@ -65,10 +78,10 @@ GEM
       rspec-expectations (~> 2.9.0)
       rspec-mocks (~> 2.9.0)
     rspec-core (2.9.0)
-    rspec-expectations (2.9.0)
+    rspec-expectations (2.9.1)
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.9.0)
-    rubyzip (0.9.6.1)
+    rubyzip (0.9.7)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
     simple_oauth (0.1.5)
@@ -97,6 +110,7 @@ DEPENDENCIES
   heroku
   httparty
   imdb_party
+  instagram!
   rack-test
   rake
   rspec

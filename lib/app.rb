@@ -3,6 +3,8 @@ require 'haml'
 require 'tmdb_party'
 require 'twitter'
 require 'feedzirra'
+require 'instagram'
+require_relative 'keys.rb'
 
 class Feed
   
@@ -10,7 +12,7 @@ class Feed
     # instance variables
     @url = url
     @rss = Feedzirra::Feed.fetch_and_parse(@url)
-    @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
+    @tmdb = TMDBParty::Base.new("0b612aa30e25ac5a0ffeb0a743e6511d")
   end
 
   def title
@@ -58,18 +60,58 @@ class Feed
    
 class Dashboard < Sinatra::Application
 
-    set :views, settings.root + '/../views'
+set :views, settings.root + '/../views'
 
+enable :sessions
+
+CALLBACK_URL = "http://localhost:9393/oauth/callback"
+
+Instagram.configure do |config|
+  config.client_id = @client_id
+  config.client_secret = @client_secret
+end
+
+get "/instagram" do
+  '<a href="/oauth/connect">Connect with Instagram</a>'
+end
+
+get "/oauth/connect" do
+  redirect Instagram.authorize_url(:redirect_uri => CALLBACK_URL)
+end
+
+get "/oauth/callback" do
+  response = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
+  session[:access_token] = response.access_token
+  redirect "/"
+end
+    
 def get_tweet
   @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first  
 end       
-  
+
+def get_instagram
+  client = Instagram.client(:access_token => session[:access_token])
+  user = client.user
+  last_photo = client.user_recent_media.first
+
+  html = "<h2>Here's #{user.username}'s most recent Instagram</h2>"
+  html << "<img src='#{last_photo.images.thumbnail.url}'>"
+
+  html 
+end
+
+def autolink_urls(tweet)
+  r = /(^|\s)@([a-z0-9_]+)/i
+  tweet.text.gsub /((https?:\/\/|www\.)([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/, %Q{<a href="\\1">\\1</a>}
+  tweet.text.gsub(r){|x| "#{$1}<a href=\"http://www.twitter.com/#{$2}\">@#{$2}<a/>"}
+end
+        
   get '/' do
     @imdb = Feed.new('http://rss.imdb.com//list/2aXCP-zFqLQ')
     @wp = Feed.new('http://infiniteregress.org/?feed=rss2')
-    @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')
-    #get_tweet     
-    
+    @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')    
+    @tweet = autolink_urls(get_tweet)
+    @instagram = get_instagram
     haml :index
   end  
         
@@ -77,26 +119,8 @@ end
     sass :stylesheet
   end
 
-  post '/movie' do
-      @movie = params[:moviename]
-      movies = imdb.find_by_title(@movie)
-      @title = movies[0][:title]
-      @year = movies[0][:year]
-      @poster = movies[0][:poster_url]
-      @num_results = movies.length - 1
-      
-      @remade = if movies[0][:title] == movies[1][:title]
-        "YES."
-      else
-        "PROBABLY NOT."
-      end
-      
-      movies.slice!(0)
-      @other_movies = movies.map {|movie| movie[:title] + " " + movie[:year]}
-      #get_id(:moviename)
-      
-      haml :movies
-  end  
+
+
       
 
 end

@@ -9,6 +9,7 @@ gem 'haml'
 gem 'rake'
 gem 'tmdb_party'
 gem 'feedzirra'
+gem 'instagram', :git => 'git://github.com/Instagram/instagram-ruby-gem.git'
 
 group :test do
   gem 'guard'
