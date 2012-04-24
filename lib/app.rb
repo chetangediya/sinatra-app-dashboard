@@ -12,7 +12,7 @@ class Feed
     # instance variables
     @url = url
     @rss = Feedzirra::Feed.fetch_and_parse(@url)
-    @tmdb = TMDBParty::Base.new("0b612aa30e25ac5a0ffeb0a743e6511d")
+    @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
   end
 
   def title
@@ -22,17 +22,17 @@ class Feed
   def length
     length = @rss.entries.length    
   end
-  
+
   def movie
     movie = @rss.entries.last.title
   end
-
-  def search
-    search_results = @tmdb.browse(:query => movie())    
-  end
   
+  def search
+    search_results = @tmdb.browse(:query => "#{@rss.entries.last.title}")
+  end  
+
   def poster
-    poster = search()[0].posters[0].cover_url
+    search().posters[0].cover_url
   end
   
   def url
@@ -69,8 +69,8 @@ enable :sessions
 CALLBACK_URL = "http://localhost:9393/oauth/callback"
 
 Instagram.configure do |config|
-  config.client_id = @client_id
-  config.client_secret = @client_secret
+  config.client_id = "b3e8dd1c56724cd9a8f7248dea717865"
+  config.client_secret = "5b530ad6abab4a2ca3f7758fc685743b"
 end
 
 get "/instagram" do
@@ -89,7 +89,6 @@ end
     
 def get_tweet
   @last_tweet = Twitter.user_timeline("timsalazar", :include_entities => true).first 
-
 end       
 
 def get_instagram
@@ -114,7 +113,7 @@ end
     @wp = Feed.new('http://infiniteregress.org/?feed=rss2')
     @lino = Feed.new('http://lino.infiniteregress.org/?feed=rss2')
     @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')    
-    @tweet = autolink_urls(get_tweet)
+#    @tweet = autolink_urls(get_tweet)
     @instagram = get_instagram
     @quora = Feed.new('http://www.quora.com/N-Timothy-Salazar/rss')
     @instapaper = Feed.new('http://www.instapaper.com/rss/2661/hINCyLmQPYJPwTPWSVVpo05Utk')
