@@ -4,15 +4,18 @@ require 'tmdb_party'
 require 'twitter'
 require 'feedzirra'
 require 'instagram'
-require_relative 'keys.rb'
 
-class Feed
+class Feeder
   
   def initialize(url)
     # instance variables
     @url = url
     @rss = Feedzirra::Feed.fetch_and_parse(@url)
     @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
+  end
+
+  def inspect
+    "RSS feed from #{@url}"
   end
 
   def title
@@ -28,11 +31,12 @@ class Feed
   end
   
   def search
-    search_results = @tmdb.browse(:query => "#{@rss.entries.last.title}")
+    @movie = movie()
+    tmdb_result = @tmdb.browse(:query => @movie)
   end  
 
   def poster
-    search().posters[0].cover_url
+    poster = search().last.posters[0].cover_url
   end
   
   def url
@@ -73,6 +77,8 @@ Instagram.configure do |config|
   config.client_secret = "5b530ad6abab4a2ca3f7758fc685743b"
 end
 
+@tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
+
 get "/instagram" do
   '<a href="/oauth/connect">Connect with Instagram</a>'
 end
@@ -109,14 +115,14 @@ def autolink_urls(tweet)
 end
         
   get '/' do
-    @imdb = Feed.new('http://rss.imdb.com//list/2aXCP-zFqLQ')
-    @wp = Feed.new('http://infiniteregress.org/?feed=rss2')
-    @lino = Feed.new('http://lino.infiniteregress.org/?feed=rss2')
-    @tumblr = Feed.new('http://blog.ntimsalazar.com/rss')    
+    @imdb = Feeder.new('http://rss.imdb.com//list/2aXCP-zFqLQ')
+    @wp = Feeder.new('http://infiniteregress.org/?feed=rss2')
+    @lino = Feeder.new('http://lino.infiniteregress.org/?feed=rss2')
+    @tumblr = Feeder.new('http://blog.ntimsalazar.com/rss')    
 #    @tweet = autolink_urls(get_tweet)
     @instagram = get_instagram
-    @quora = Feed.new('http://www.quora.com/N-Timothy-Salazar/rss')
-    @instapaper = Feed.new('http://www.instapaper.com/rss/2661/hINCyLmQPYJPwTPWSVVpo05Utk')
+    @quora = Feeder.new('http://www.quora.com/N-Timothy-Salazar/rss')
+    @instapaper = Feeder.new('http://www.instapaper.com/rss/2661/hINCyLmQPYJPwTPWSVVpo05Utk')
     haml :index
   end  
         

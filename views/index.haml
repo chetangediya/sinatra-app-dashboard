@@ -2,10 +2,9 @@
   %head
     %title IR Dashboard v0.1
   %link{:rel => "stylesheet", :href => "/stylesheet.css", :type => "text/css", :media => "all"}
-
   %body
     #main/
-    %h2 I've watched #{@imdb.length} movies this year, the last one was: #{@imdb.title} 
+    %h2 I've watched #{@imdb.length} movies this year, the last one was: #{@imdb.movie}
     %img{:src => "#{@imdb.poster}", :class => "poster"}
     %p See all the movies I've watched in 2012 at the <a href="#{@imdb.url}">IMDb Movie List</a> #{@imdb.to_html}
     %p #{@wp.to_html}
