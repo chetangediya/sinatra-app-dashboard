@@ -4,6 +4,7 @@ require 'tmdb_party'
 require 'twitter'
 require 'feedzirra'
 require 'instagram'
+require_relative 'keys.rb'
 
 class Feeder
   
@@ -11,7 +12,7 @@ class Feeder
     # instance variables
     @url = url
     @rss = Feedzirra::Feed.fetch_and_parse(@url)
-    @tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
+    @tmdb = TMDBParty::Base.new("key")
   end
 
   def inspect
@@ -70,14 +71,14 @@ set :views, settings.root + '/../views'
 
 enable :sessions
 
+@tmdb = TMDBParty::Base.new(@tmdb_key)
+
 CALLBACK_URL = "http://localhost:9393/oauth/callback"
 
 Instagram.configure do |config|
-  config.client_id = "b3e8dd1c56724cd9a8f7248dea717865"
-  config.client_secret = "5b530ad6abab4a2ca3f7758fc685743b"
+  config.client_id = @client_id
+  config.client_secret = @client_secret
 end
-
-@tmdb = TMDBParty::Base.new('0b612aa30e25ac5a0ffeb0a743e6511d')
 
 get "/instagram" do
   '<a href="/oauth/connect">Connect with Instagram</a>'
