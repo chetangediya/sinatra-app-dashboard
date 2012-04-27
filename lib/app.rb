@@ -12,7 +12,7 @@ class Feeder
     # instance variables
     @url = url
     @rss = Feedzirra::Feed.fetch_and_parse(@url)
-    @tmdb = TMDBParty::Base.new("key")
+    @tmdb = TMDBParty::Base.new(Keys.tmdb_key)
   end
 
   def inspect
@@ -49,17 +49,17 @@ class Feeder
     min_title_length = 0
     most_recent_post = @rss.entries.first
  
-    html = "<h2>The most recent post from <a href='#{@rss.url}'>#{@rss.title}</a></h2>"
-    html << "<small>on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</small><br/>" \
+    html = "<h3><a href='#{@rss.url}'>#{@rss.title}</a></h3>"
+    html << "<span class='white label'>on #{@rss.entries[0].published.strftime('%m/%d/%Y')}</span>" \
       if @rss.entries[0].published
         if not "#{most_recent_post.content}".include? "#{most_recent_post.title}"
-          html << "#{most_recent_post.title}"
+          html << "<h5>#{most_recent_post.title}</h5>"
         end
         if not "#{most_recent_post.content}".empty? 
-          html << "#{most_recent_post.content}"
+          html << "<p>#{most_recent_post.content}</p>"
         end
         if not @url.include? "infiniteregress.org"
-          html << "#{most_recent_post.summary}"
+          html << "<p>#{most_recent_post.summary}</p>"
         end
     html
       end
@@ -71,13 +71,11 @@ set :views, settings.root + '/../views'
 
 enable :sessions
 
-@tmdb = TMDBParty::Base.new(@tmdb_key)
-
 CALLBACK_URL = "http://localhost:9393/oauth/callback"
 
 Instagram.configure do |config|
-  config.client_id = @client_id
-  config.client_secret = @client_secret
+  config.client_id = Keys.client_id
+  config.client_secret = Keys.client_secret
 end
 
 get "/instagram" do
@@ -103,7 +101,7 @@ def get_instagram
   user = client.user
   last_photo = client.user_recent_media.first
 
-  html = "<h2>Here's #{user.username}'s most recent Instagram</h2>"
+  html = "<h3>Here's #{user.username}'s most recent Instagram</h3>"
   html << "<img src='#{last_photo.images.thumbnail.url}'>"
 
   html 
@@ -120,7 +118,7 @@ end
     @wp = Feeder.new('http://infiniteregress.org/?feed=rss2')
     @lino = Feeder.new('http://lino.infiniteregress.org/?feed=rss2')
     @tumblr = Feeder.new('http://blog.ntimsalazar.com/rss')    
-#    @tweet = autolink_urls(get_tweet)
+    @tweet = autolink_urls(get_tweet)
     @instagram = get_instagram
     @quora = Feeder.new('http://www.quora.com/N-Timothy-Salazar/rss')
     @instapaper = Feeder.new('http://www.instapaper.com/rss/2661/hINCyLmQPYJPwTPWSVVpo05Utk')

@@ -3,15 +3,42 @@
     %title IR Dashboard v0.1
   %link{:rel => "stylesheet", :href => "/stylesheet.css", :type => "text/css", :media => "all"}
   %body
-    #main/
-    %h2 I've watched #{@imdb.length} movies this year, the last one was: #{@imdb.movie}
-    %img{:src => "#{@imdb.poster}", :class => "poster"}
-    %p See all the movies I've watched in 2012 at the <a href="#{@imdb.url}">IMDb Movie List</a> #{@imdb.to_html}
-    %p #{@wp.to_html}
-    %p #{@lino.to_html}
-    %p #{@tumblr.to_html}
-    %h2 From the Twitter: 
-    %p #{@tweet}
-    %p #{@instagram}
-    %p #{@quora.to_html}
-    %p #{@instapaper.to_html}
+    %div{:class => "container"}
+      %div{:id => "row twelve columns"}
+        .container
+          .row
+            %div{:class => "six columns"}
+              .panel
+                %h4 I've watched #{@imdb.length} movies this year, the last one was: 
+                %h3 #{@imdb.movie}
+                %img{:src => "#{@imdb.poster}", :class => "poster"}
+                %p See all the movies I've watched in 2012 at the <a href="#{@imdb.url}">IMDb Movie List</a>
+            %div{:class => "six columns"}
+              .panel
+                %p #{@wp.to_html}
+        .container
+          .row
+            %div{:class => "six columns"}
+              .panel
+                %p #{@lino.to_html}
+            %div{:class => "six columns"}  
+              .panel
+                .row #{@tumblr.to_html}
+                .row 
+                  %h3 <a href="http://twitter.com/timsalazar">tweet:</a>
+                  .p #{@tweet}
+                  
+        .container
+          .row
+            %div{:class => "six columns"}
+              .panel
+                %p #{@instagram}
+            %div{:class => "six columns"}
+              .panel
+                %p #{@instapaper.to_html}
+        .container
+          .row
+            %div{:class => "twelve columns"}
+              .panel
+                %p #{@quora.to_html}
+    
